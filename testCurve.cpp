@@ -36,11 +36,6 @@ glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 cameraRight;
 glm::vec3 cameraUp;
-int numDVert = 3120;
-//int numDVert = 10080;
-int sizeV = sizeof(float)*9*numDVert*FUR_LAYERS;
-
-static float newVertices[sizeof(float)*9*10080*40];
 
 int main(int argc, char* argv[]){
 	
@@ -80,7 +75,7 @@ int main(int argc, char* argv[]){
 		return -1;
 	}
 	
-	Shader furShader("fur.vs", "fur.fs");
+	Shader furShader("floor.vs", "floor.fs");
 	
 	
 	/*
@@ -126,7 +121,8 @@ int main(int argc, char* argv[]){
 	std::ifstream inputFile;
     	inputFile.open("bv3.txt");
     
-    	//int numDVert = 1000;
+    	//int numDVert = 10080;
+    	int numDVert = 3120;
     	float vertices[numDVert*8];
    	int count1 = 0;
     	while(count1 < numDVert*8 && inputFile >>vertices[count1]){
@@ -134,8 +130,8 @@ int main(int argc, char* argv[]){
     	}
     	inputFile.close();
     	
-    	
-    
+    	/*
+    	float newVertices[sizeof(float)*9*numDVert*FUR_LAYERS];
 	
 	for(int i = 0; i < FUR_LAYERS; i++){
 		float layer = (float)i/ (float)(FUR_LAYERS - 1);
@@ -170,13 +166,13 @@ int main(int argc, char* argv[]){
 			
 		}
 	}
-	
+	*/
 	unsigned int VAO, VBO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(float)*newVertices.size()*newVertices[0].size(), newVertices.data(), GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(newVertices), newVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	//initialize VAO
@@ -184,12 +180,12 @@ int main(int argc, char* argv[]){
 	//glBindBuffer(GL_ARRAY_BUFFER, VAO);
 	
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(3*sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(8 * sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(5 * sizeof(float)));
     	glEnableVertexAttribArray(2);
     	
     
@@ -231,7 +227,7 @@ int main(int argc, char* argv[]){
     	
     	stbi_image_free(data2);*/
 	//Next we load the texture color image
-	 unsigned int texture2;
+	 /*unsigned int texture2;
 	 glGenTextures(1, &texture2);
     	glBindTexture(GL_TEXTURE_2D, texture2);
     	// set the texture wrapping parameters
@@ -244,7 +240,7 @@ int main(int argc, char* argv[]){
     	int width, height, nrChannels;
     	
     	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-    	unsigned char *data = stbi_load("red.png", &width, &height, &nrChannels, 0);
+    	unsigned char *data = stbi_load("1286146771.png", &width, &height, &nrChannels, 0);
     	if (data){
         	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         	glGenerateMipmap(GL_TEXTURE_2D);
@@ -267,7 +263,7 @@ int main(int argc, char* argv[]){
 	
     	//create the fur geometry
     	//FurGe furGeom(vertices3, furShader, FUR_LAYERS, FUR_HEIGHT);
-    	
+    	*/
     	
 	/*
 	//Generate Fur layers
@@ -282,10 +278,10 @@ int main(int argc, char* argv[]){
 	
 	furShader.use();
 	
-	furShader.setInt("fur", 0);
+	//furShader.setInt("fur", 0);
 	
         
-        furShader.setInt("color", 1);
+        //furShader.setInt("color", 1);
         
         
 	
@@ -302,7 +298,7 @@ int main(int argc, char* argv[]){
    	cameraRight = glm::normalize(glm::cross(up, cameraDirection));
    	
    	cameraUp = glm::cross(cameraDirection, cameraRight);
-   	//glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+   	glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
         //view = glm::lookAt(glm::vec3(camX, camY, camZ), cameraTarget, cameraUp);
   	
 	while(!glfwWindowShouldClose(window)){
@@ -314,11 +310,11 @@ int main(int argc, char* argv[]){
 		glClear(GL_COLOR_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
   	
-		glActiveTexture(GL_TEXTURE0);
+		/*glActiveTexture(GL_TEXTURE0);
         	glBindTexture(GL_TEXTURE_2D, texture);
 		glActiveTexture(GL_TEXTURE1);
         	glBindTexture(GL_TEXTURE_2D, texture2);
-        	
+        	*/
         	
 		furShader.use();
 		
@@ -326,9 +322,9 @@ int main(int argc, char* argv[]){
   		glm::mat4 view = glm::mat4(1.0f);
   		glm::mat4 projection = glm::mat4(1.0f);
   		
-  		model = glm::scale(glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f)), glm::vec3(5.f, 5.f, 5.f));
+  		model = glm::scale(glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f)), glm::vec3(0.5f, 0.5f, 0.5f));
         
-        	view  = glm::translate(view, glm::vec3(0.0f, -10.0f, -60.0f)) ;
+        	view  = glm::translate(view, glm::vec3(0.0f, -20.0f, -100.0f)) ;
         
         	projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
          	glUniformMatrix4fv(glGetUniformLocation(furShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
@@ -336,14 +332,14 @@ int main(int argc, char* argv[]){
 		projection = glm::perspective(glm::radians(60.0f), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 100.0f);
     		furShader.setMat4("projection", projection);
     		
-    		glm::vec3 gravity(0.0f, 0.0f, 0.0f);
-    		glm::vec3 force(0.0f, 0.0f, 0.0f);
-    		glm::vec3 disp = gravity + force;
-    		glUniform3f(glGetUniformLocation(furShader.ID, "displacement"), disp.x, disp.y, disp.z);
+    		//glm::vec3 gravity(0.0f, 0.0f, 0.0f);
+    		//glm::vec3 force(0.0f, sin(glfwGetTime()) * 0.5f, 0.0f);
+    		//glm::vec3 disp = gravity + force;
+    		//glUniform3f(glGetUniformLocation(furShader.ID, "displacement"), disp.x, disp.y, disp.z);
 		
 		//glTexSubImage2D(GL_TEXTURE_2D, 0, 0.0, 0.0, SCR_WIDTH, SCR_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, ftx.furTexture);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, numDVert*FUR_LAYERS);
+		glDrawArrays(GL_TRIANGLES, 0, numDVert);
 		/*
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
 		glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
